@@ -1,27 +1,33 @@
 package com.amanarora.gify;
 
+import android.app.Activity;
 import android.app.Application;
 
-import com.amanarora.gify.injection.AppComponent;
-import com.amanarora.gify.injection.AppModule;
-import com.amanarora.gify.injection.DaggerAppComponent;
-import com.amanarora.gify.injection.NetworkModule;
+import com.amanarora.gify.injection.DaggerApplicationComponent;
 
-public class GifyApp extends Application {
+import javax.inject.Inject;
 
-    private AppComponent appComponent;
+import dagger.android.AndroidInjector;
+import dagger.android.DispatchingAndroidInjector;
+import dagger.android.HasActivityInjector;
+
+public class GifyApp extends Application implements HasActivityInjector {
+
+    @Inject
+    DispatchingAndroidInjector<Activity> dispatchingAndroidInjector;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-        appComponent = DaggerAppComponent.builder()
-                .appModule(new AppModule(this))
-                .networkModule(new NetworkModule())
-                .build();
+        DaggerApplicationComponent.builder()
+                .application(this)
+                .build()
+                .inject(this);
     }
 
-    public AppComponent getAppComponent() {
-        return appComponent;
+    @Override
+    public AndroidInjector<Activity> activityInjector() {
+        return dispatchingAndroidInjector;
     }
 }

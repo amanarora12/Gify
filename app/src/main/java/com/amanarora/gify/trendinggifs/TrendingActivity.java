@@ -1,6 +1,7 @@
 package com.amanarora.gify.trendinggifs;
 
 import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
@@ -10,15 +11,17 @@ import android.support.v7.widget.GridLayoutManager;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.amanarora.gify.GifyApp;
 import com.amanarora.gify.R;
 import com.amanarora.gify.api.GlideService;
 import com.amanarora.gify.databinding.ActivityTrendingBinding;
+import com.amanarora.gify.injection.viewmodelinjection.ViewModelFactory;
 import com.amanarora.gify.models.GifObject;
 
 import java.util.List;
 
 import javax.inject.Inject;
+
+import dagger.android.AndroidInjection;
 
 public class TrendingActivity extends AppCompatActivity {
     private static final String LOG_TAG = TrendingActivity.class.getSimpleName();
@@ -27,18 +30,20 @@ public class TrendingActivity extends AppCompatActivity {
     private TrendingGifsAdapter adapter;
 
     @Inject
+    ViewModelProvider.Factory viewModelFactory;
+
+    @Inject
     GlideService glideService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
-
-        ((GifyApp)getApplication()).getAppComponent().inject(this);
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_trending);
         setSupportActionBar(binding.toolbar);
 
-        viewModel = ViewModelProviders.of(this).get(TrendingViewModel.class);
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(TrendingViewModel.class);
 
         setupTrendingGifsRecyclerView();
     }
