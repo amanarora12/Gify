@@ -27,7 +27,7 @@ public class GiphyService {
 
     public LiveData<List<GifObject>> loadTrendingGifs() {
         final MutableLiveData<List<GifObject>> data = new MutableLiveData<>();
-        giphyApiService.getTrendingGifs(25).enqueue(new Callback<GiphyResponse>() {
+        giphyApiService.getTrendingGifs(0, 25).enqueue(new Callback<GiphyResponse>() {
             @Override
             public void onResponse(Call<GiphyResponse> call, Response<GiphyResponse> response) {
                 if (response.isSuccessful()) {

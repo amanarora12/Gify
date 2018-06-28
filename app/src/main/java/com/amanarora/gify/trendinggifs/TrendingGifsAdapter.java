@@ -1,8 +1,10 @@
 package com.amanarora.gify.trendinggifs;
 
+import android.arch.paging.PagedListAdapter;
 import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
 import android.support.annotation.NonNull;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,18 +18,31 @@ import com.amanarora.gify.models.GifObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TrendingGifsAdapter extends RecyclerView.Adapter<TrendingGifsAdapter.GifViewHolder>{
+public class TrendingGifsAdapter extends PagedListAdapter<GifObject, TrendingGifsAdapter.GifViewHolder>{
     private static final String LOG_TAG = TrendingGifsAdapter.class.getSimpleName();
     private List<GifObject> trendingGifsList = new ArrayList<>();
     private GlideService glideService;
 
+    private static final DiffUtil.ItemCallback<GifObject> DIFF_CALLBACK = new DiffUtil.ItemCallback<GifObject>() {
+        @Override
+        public boolean areItemsTheSame(GifObject oldItem, GifObject newItem) {
+            return oldItem.getId().equals(newItem.getId());
+        }
+
+        @Override
+        public boolean areContentsTheSame(GifObject oldItem, GifObject newItem) {
+            return oldItem == newItem;
+        }
+    };
+
     TrendingGifsAdapter(GlideService glideService) {
+        super(DIFF_CALLBACK);
         this.glideService = glideService;
     }
 
     void updateList(List<GifObject> trendingGifs) {
         if (trendingGifs != null && !trendingGifs.isEmpty()) {
-            trendingGifsList.addAll(trendingGifs);
+            trendingGifsList = trendingGifs;
         }
         notifyDataSetChanged();
     }
@@ -47,8 +62,10 @@ public class TrendingGifsAdapter extends RecyclerView.Adapter<TrendingGifsAdapte
     @Override
     public void onBindViewHolder(@NonNull GifViewHolder holder, int position) {
         GifObject gifObject = trendingGifsList.get(position);
-        glideService.loadGif(gifObject.getImages().getPreviewGif().getUrl())
-                .into(holder.binding.gifImageView);
+        if (gifObject != null) {
+            glideService.loadGif(gifObject.getImages().getPreviewGif().getUrl())
+                    .into(holder.binding.gifImageView);
+        }
     }
 
     @Override

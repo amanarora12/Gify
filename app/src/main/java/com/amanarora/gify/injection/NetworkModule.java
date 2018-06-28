@@ -6,6 +6,8 @@ import com.amanarora.gify.Constants;
 import com.amanarora.gify.R;
 import com.amanarora.gify.api.GiphyApiService;
 import com.amanarora.gify.api.GiphyService;
+import com.amanarora.gify.trendinggifs.paging.GiphyDataSource;
+import com.amanarora.gify.trendinggifs.paging.GiphyDataSourceFactory;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -44,5 +46,15 @@ public class NetworkModule {
     @Provides
     GiphyService provideGiphyService(GiphyApiService giphyApiService) {
         return new GiphyService(giphyApiService);
+    }
+
+    @Provides
+    GiphyDataSource provideGiphyDataSource(GiphyApiService giphyApiService) {
+        return new GiphyDataSource(giphyApiService);
+    }
+
+    @Provides
+    GiphyDataSourceFactory provideGiphyDataSourceFactory(GiphyDataSource giphyDataSource) {
+        return new GiphyDataSourceFactory(giphyDataSource);
     }
 }

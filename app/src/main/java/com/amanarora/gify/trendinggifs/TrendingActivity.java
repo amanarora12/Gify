@@ -3,6 +3,7 @@ package com.amanarora.gify.trendinggifs;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
+import android.arch.paging.PagedList;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -44,7 +45,7 @@ public class TrendingActivity extends AppCompatActivity {
         setSupportActionBar(binding.toolbar);
 
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(TrendingViewModel.class);
-
+        viewModel.init();
         setupTrendingGifsRecyclerView();
     }
 
@@ -56,13 +57,19 @@ public class TrendingActivity extends AppCompatActivity {
     }
 
     private void populateRecyclerViewWithGifs() {
-        viewModel.loadTrendingGifs().observe(this, new Observer<List<GifObject>>() {
+       /* viewModel.loadTrendingGifs().observe(this, new Observer<List<GifObject>>() {
             @Override
             public void onChanged(@Nullable List<GifObject> gifObjects) {
                 if (gifObjects != null && !gifObjects.isEmpty()) {
                     adapter.updateList(gifObjects);
                 }
 
+            }
+        });*/
+        viewModel.getGifs().observe(this, new Observer<PagedList<GifObject>>() {
+            @Override
+            public void onChanged(@Nullable PagedList<GifObject> gifObjects) {
+                adapter.updateList(gifObjects);
             }
         });
     }
