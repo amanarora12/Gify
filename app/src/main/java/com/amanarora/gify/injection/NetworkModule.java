@@ -7,6 +7,8 @@ import com.amanarora.gify.R;
 import com.amanarora.gify.api.GiphyApiService;
 import com.amanarora.gify.api.GiphyService;
 
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+
 import javax.inject.Named;
 import javax.inject.Singleton;
 

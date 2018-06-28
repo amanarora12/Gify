@@ -4,6 +4,7 @@ import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.telecom.Call;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,9 +21,15 @@ public class TrendingGifsAdapter extends RecyclerView.Adapter<TrendingGifsAdapte
     private static final String LOG_TAG = TrendingGifsAdapter.class.getSimpleName();
     private List<GifObject> trendingGifsList = new ArrayList<>();
     private GlideService glideService;
+    private Callback callback;
 
-    TrendingGifsAdapter(GlideService glideService) {
+    public interface Callback {
+        void onItemSelected(String url);
+    }
+
+    TrendingGifsAdapter(GlideService glideService, Callback callback) {
         this.glideService = glideService;
+        this.callback = callback;
     }
 
     void updateList(List<GifObject> trendingGifs) {
@@ -68,6 +75,13 @@ public class TrendingGifsAdapter extends RecyclerView.Adapter<TrendingGifsAdapte
         GifViewHolder(View itemView) {
             super(itemView);
             binding = DataBindingUtil.bind(itemView);
+            binding.getRoot().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String gifUrl = trendingGifsList.get(getAdapterPosition()).getImages().getFixedHeight().getUrl();
+                    callback.onItemSelected(gifUrl);
+                }
+            });
         }
 
     }

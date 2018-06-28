@@ -1,4 +1,5 @@
 <resources>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="gif_height">135dp</dimen>
+    <dimen name="random_gif_height">300dp</dimen>
 </resources>

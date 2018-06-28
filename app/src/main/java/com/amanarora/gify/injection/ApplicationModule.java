@@ -3,6 +3,8 @@ package com.amanarora.gify.injection;
 import android.app.Application;
 import android.content.Context;
 
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+
 import javax.inject.Singleton;
 
 import dagger.Module;
