@@ -6,9 +6,13 @@ import android.util.Log;
 
 import com.amanarora.gify.models.GifObject;
 import com.amanarora.gify.models.GiphyResponse;
+import com.amanarora.gify.models.RandomGiphyResponse;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -35,7 +39,7 @@ public class GiphyService {
                         //TODO Transform Model
                         Log.d(LOG_TAG, "onResponse: success"  );
                         List<GifObject> objects = Objects.requireNonNull(response.body()).getData();
-                        data.setValue(objects);
+                        data.postValue(objects);
                     }
                 }
             }
@@ -45,6 +49,24 @@ public class GiphyService {
                 Log.e(LOG_TAG, "Request Failed. ", t );
             }
         });
+        return data;
+    }
+
+    public LiveData<String> loadRandomGifPeriodically(ScheduledThreadPoolExecutor executor) {
+        final MutableLiveData<String> data = new MutableLiveData<>();
+        long period = 10;
+        executor.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Log.d(LOG_TAG, "Executing every 10 seconds ");
+                    String url = giphyApiService.getRandomGif().execute().body().getData().getImages().getFixedHeight().getUrl();
+                    data.postValue(url);
+                } catch (IOException e) {
+                    Log.e(LOG_TAG, "Cannot retrieve gif. ", e );
+                }
+            }
+        }, period, period, TimeUnit.SECONDS);
         return data;
     }
 }

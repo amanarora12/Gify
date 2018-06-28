@@ -14,7 +14,7 @@ public class TrendingViewModel extends ViewModel {
     private GiphyService giphyService;
 
     @Inject
-    public TrendingViewModel(GiphyService giphyService) {
+    TrendingViewModel(GiphyService giphyService) {
         this.giphyService = giphyService;
     }
 
