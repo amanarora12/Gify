@@ -60,7 +60,7 @@ public class GiphyService {
             public void run() {
                 try {
                     Log.d(LOG_TAG, "Executing every 10 seconds ");
-                    String url = giphyApiService.getRandomGif().execute().body().getData().getImages().getFixedHeight().getUrl();
+                    String url = giphyApiService.getRandomGif().execute().body().getData().getImages().getFixedHeight().getMp4();
                     data.postValue(url);
                 } catch (IOException e) {
                     Log.e(LOG_TAG, "Cannot retrieve gif. ", e );
