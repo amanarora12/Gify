@@ -71,7 +71,7 @@ public class TrendingActivity extends AppCompatActivity {
         });
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
-        recyclerView.setItemViewCacheSize(25);
+        recyclerView.setItemViewCacheSize(LIMIT_PER_REQUEST);
         recyclerView.setDrawingCacheEnabled(true);
         recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         recyclerView.addOnScrollListener(new PaginationScrollListener(manager) {
