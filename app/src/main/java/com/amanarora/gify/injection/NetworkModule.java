@@ -8,6 +8,7 @@ import com.amanarora.gify.NetworkStateProvider;
 import com.amanarora.gify.R;
 import com.amanarora.gify.api.GiphyApiService;
 import com.amanarora.gify.api.GiphyService;
+import com.amanarora.gify.models.repository.GifRepository;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -104,7 +105,7 @@ public class NetworkModule {
 
     @Singleton
     @Provides
-    GiphyService provideGiphyService(GiphyApiService giphyApiService) {
+    GifRepository provideGiphyService(GiphyApiService giphyApiService) {
         return new GiphyService(giphyApiService);
     }
 }

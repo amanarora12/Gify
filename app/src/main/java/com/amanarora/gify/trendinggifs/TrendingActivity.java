@@ -33,7 +33,6 @@ public class TrendingActivity extends AppCompatActivity {
     private ActivityTrendingBinding binding;
     private TrendingViewModel viewModel;
     private TrendingGifsAdapter adapter;
-    private static final int LIMIT_PER_REQUEST = 25;
     private static final int START_OFFSET = 0;
     private boolean isLoading = false;
     private boolean isLastResult = false;
@@ -68,7 +67,7 @@ public class TrendingActivity extends AppCompatActivity {
         adapter = new TrendingGifsAdapter(glideService, url -> startActivity(randomGifActivityIntent(url)));
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
-        recyclerView.setItemViewCacheSize(LIMIT_PER_REQUEST);
+        recyclerView.setItemViewCacheSize(Constants.LIMIT_PER_REQUEST);
         recyclerView.setDrawingCacheEnabled(true);
         recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         recyclerView.addOnScrollListener(new PaginationScrollListener(manager) {
@@ -80,8 +79,8 @@ public class TrendingActivity extends AppCompatActivity {
             @Override
             void loadMoreResults() {
                 isLoading = true;
-                currentOffset += LIMIT_PER_REQUEST;
-                loadNextResults(currentOffset, LIMIT_PER_REQUEST);
+                currentOffset += Constants.LIMIT_PER_REQUEST;
+                loadNextResults(currentOffset);
             }
 
             @Override
@@ -98,7 +97,7 @@ public class TrendingActivity extends AppCompatActivity {
     }
 
     private void loadInitialResults() {
-        viewModel.loadTrendingGifs(START_OFFSET, LIMIT_PER_REQUEST).observe(this, giphyResponse -> {
+        viewModel.loadTrendingGifs(START_OFFSET).observe(this, giphyResponse -> {
             if (giphyResponse != null) {
                 if (binding.content.errorScreen.errorLayout.getVisibility() == View.VISIBLE) {
                     binding.content.errorScreen.errorLayout.setVisibility(View.GONE);
@@ -108,7 +107,7 @@ public class TrendingActivity extends AppCompatActivity {
                     totalResults = pagination.getTotalCount();
                 }
                 List<GifObject> gifObjects = giphyResponse.getData();
-                loadGifs(gifObjects, START_OFFSET, LIMIT_PER_REQUEST);
+                loadGifs(gifObjects, START_OFFSET);
                 binding.content.progressBar.setVisibility(View.GONE);
             } else {
                 binding.content.progressBar.setVisibility(View.GONE);
@@ -120,25 +119,25 @@ public class TrendingActivity extends AppCompatActivity {
         });
     }
 
-    private void loadNextResults(int offset, int limit) {
-        viewModel.loadTrendingGifs(offset, limit).observe(this, giphyResponse -> {
+    private void loadNextResults(int offset) {
+        viewModel.loadTrendingGifs(offset).observe(this, giphyResponse -> {
             if (giphyResponse != null) {
                 List<GifObject> gifObjects = giphyResponse.getData();
-                loadGifs(gifObjects, offset, limit);
+                loadGifs(gifObjects, offset);
             } else{
                 Snackbar.make(binding.getRoot(), getResources().getString(R.string.error_msg),Snackbar.LENGTH_INDEFINITE)
-                        .setAction(getResources().getString(R.string.retry), view -> loadNextResults(offset, limit))
+                        .setAction(getResources().getString(R.string.retry), view -> loadNextResults(offset))
                         .setActionTextColor(getResources().getColor(R.color.colorAccent))
                         .show();
             }
         });
     }
 
-    private void loadGifs(List<GifObject> gifObjects, int offset, int limit){
+    private void loadGifs(List<GifObject> gifObjects, int offset){
         if (DataUtils.isNotNull(gifObjects) && !gifObjects.isEmpty()) {
             adapter.addAllGifs(gifObjects);
             isLoading = false;
-            if ((offset + limit) > totalResults) {
+            if ((offset + Constants.LIMIT_PER_REQUEST) > totalResults) {
                 isLastResult = true;
             }
         }

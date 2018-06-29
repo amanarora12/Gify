@@ -19,6 +19,6 @@ public class GifsViewModel extends ViewModel {
     }
 
     LiveData<String> loadRandomGifPeriodically(ScheduledThreadPoolExecutor executor){
-        return giphyService.loadRandomGifPeriodically(executor);
+        return giphyService.getRandomGif(executor);
     }
 }
