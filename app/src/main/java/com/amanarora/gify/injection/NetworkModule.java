@@ -44,18 +44,15 @@ public class NetworkModule {
     @Provides
     @Named("cache")
     public Interceptor provideCacheInterceptor() {
-        return new Interceptor() {
-            @Override
-            public Response intercept(Chain chain) throws IOException {
-                Response response = chain.proceed(chain.request());
+        return chain -> {
+            Response response = chain.proceed(chain.request());
 
-                CacheControl cacheControl = new CacheControl.Builder()
-                        .maxAge(2, TimeUnit.MINUTES)
-                        .build();
-                return response.newBuilder()
-                        .header("Cache-Control", cacheControl.toString())
-                        .build();
-            }
+            CacheControl cacheControl = new CacheControl.Builder()
+                    .maxAge(2, TimeUnit.MINUTES)
+                    .build();
+            return response.newBuilder()
+                    .header("Cache-Control", cacheControl.toString())
+                    .build();
         };
     }
 
@@ -63,20 +60,17 @@ public class NetworkModule {
     @Named("offline_cache")
     public Interceptor provideOfflineCacheInterceptor(Context context) {
         final boolean hasNetwork = new NetworkStateProvider(context).isNetworkConnected();
-        return new Interceptor() {
-            @Override
-            public Response intercept(Chain chain) throws IOException {
-                Request request = chain.request();
-                if (!hasNetwork) {
-                    CacheControl cacheControl = new CacheControl.Builder()
-                            .maxStale(1, TimeUnit.DAYS)
-                            .build();
-                    request = request.newBuilder()
-                            .cacheControl(cacheControl)
-                            .build();
-                }
-                return chain.proceed(request);
+        return chain -> {
+            Request request = chain.request();
+            if (!hasNetwork) {
+                CacheControl cacheControl = new CacheControl.Builder()
+                        .maxStale(1, TimeUnit.DAYS)
+                        .build();
+                request = request.newBuilder()
+                        .cacheControl(cacheControl)
+                        .build();
             }
+            return chain.proceed(request);
         };
     }
 

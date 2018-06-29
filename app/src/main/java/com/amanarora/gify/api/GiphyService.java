@@ -41,12 +41,14 @@ public class GiphyService {
                     }
                 } else {
                     Log.e(LOG_TAG, "Response not successful.");
+                    data.postValue(null);
                 }
             }
 
             @Override
             public void onFailure(Call<GiphyResponse> call, Throwable t) {
                 Log.e(LOG_TAG, "Request Failed. ", t );
+                data.postValue(null);
             }
         });
         return data;
