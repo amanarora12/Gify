@@ -1,15 +1,14 @@
 package com.amanarora.gify.randomgifs;
 
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
 import com.amanarora.gify.Constants;
+import com.amanarora.gify.DataUtils;
 import com.amanarora.gify.R;
 import com.amanarora.gify.api.GlideService;
 import com.amanarora.gify.databinding.ActivityGifsBinding;
@@ -45,7 +44,7 @@ public class GifsActivity extends AppCompatActivity {
 
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(GifsViewModel.class);
 
-        if (url != null && !url.isEmpty()) {
+        if (DataUtils.isNotNullOrEmpty(url)) {
             glideService.loadRandomGif(url).into(binding.randomGifImageView);
         }
     }
@@ -54,12 +53,9 @@ public class GifsActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         executor = new ScheduledThreadPoolExecutor(1);
-        viewModel.loadRandomGifPeriodically(executor).observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                if (s != null && !s.isEmpty()) {
-                    glideService.loadRandomGif(s).into(binding.randomGifImageView);
-                }
+        viewModel.loadRandomGifPeriodically(executor).observe(this, s -> {
+            if (DataUtils.isNotNullOrEmpty(s)) {
+                glideService.loadRandomGif(s).into(binding.randomGifImageView);
             }
         });
     }

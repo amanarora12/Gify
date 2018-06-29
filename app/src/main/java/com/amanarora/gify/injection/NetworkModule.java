@@ -94,7 +94,6 @@ public class NetworkModule {
                 .build();
     }
 
-    @Singleton
     @Provides
     Retrofit provideRetrofit(OkHttpClient okHttpClient) {
         return new Retrofit.Builder()
@@ -104,7 +103,6 @@ public class NetworkModule {
                 .build();
     }
 
-    @Singleton
     @Provides
     GiphyApiService provideGiphyApiService(Retrofit retrofit) {
         return retrofit.create(GiphyApiService.class);
