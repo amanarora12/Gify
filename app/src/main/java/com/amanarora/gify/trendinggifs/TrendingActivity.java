@@ -9,14 +9,15 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.amanarora.gify.Constants;
 import com.amanarora.gify.R;
 import com.amanarora.gify.api.GlideService;
 import com.amanarora.gify.databinding.ActivityTrendingBinding;
-import com.amanarora.gify.injection.viewmodelinjection.ViewModelFactory;
 import com.amanarora.gify.models.GifObject;
 import com.amanarora.gify.randomgifs.GifsActivity;
 
@@ -31,6 +32,11 @@ public class TrendingActivity extends AppCompatActivity {
     private ActivityTrendingBinding binding;
     private TrendingViewModel viewModel;
     private TrendingGifsAdapter adapter;
+    public static final int LIMIT_PER_REQUEST = 25;
+    private boolean isLoading = false;
+    private boolean isLastResult = false;
+    private int totalResults = 100;
+    private int currentOffset = 0;
 
     @Inject
     ViewModelProvider.Factory viewModelFactory;
@@ -45,22 +51,58 @@ public class TrendingActivity extends AppCompatActivity {
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_trending);
         setSupportActionBar(binding.toolbar);
-
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(TrendingViewModel.class);
 
         setupTrendingGifsRecyclerView();
     }
 
     private void setupTrendingGifsRecyclerView() {
-        binding.content.gifList.setLayoutManager(new GridLayoutManager(this, 2));
+        if (binding.content == null) {
+            return;
+        }
+        GridLayoutManager manager = new GridLayoutManager(this, 2);
+        RecyclerView recyclerView = binding.content.gifList;
+        recyclerView.setLayoutManager(manager);
         adapter = new TrendingGifsAdapter(glideService, new TrendingGifsAdapter.Callback() {
             @Override
             public void onItemSelected(String url) {
                 startActivity(randomGifActivityIntent(url));
             }
         });
-        binding.content.gifList.setAdapter(adapter);
-        populateRecyclerViewWithGifs();
+        recyclerView.setAdapter(adapter);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setItemViewCacheSize(25);
+        recyclerView.setDrawingCacheEnabled(true);
+        recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+        recyclerView.addOnScrollListener(new PaginationScrollListener(manager) {
+            @Override
+            int getTotalResultCount() {
+                return totalResults;
+            }
+
+            @Override
+            void loadMoreResults() {
+                isLoading = true;
+                currentOffset += LIMIT_PER_REQUEST;
+                populateRecyclerViewWithGifs(currentOffset, LIMIT_PER_REQUEST);
+            }
+
+            @Override
+            boolean isLastResult() {
+                return isLastResult;
+            }
+
+            @Override
+            boolean isLoading() {
+                return isLoading;
+            }
+        });
+        loadInitialResults();
+        binding.content.progressBar.setVisibility(View.GONE);
+    }
+
+    private void loadInitialResults() {
+        populateRecyclerViewWithGifs(currentOffset, LIMIT_PER_REQUEST);
     }
 
     private Intent randomGifActivityIntent(String url) {
@@ -69,14 +111,17 @@ public class TrendingActivity extends AppCompatActivity {
         return intent;
     }
 
-    private void populateRecyclerViewWithGifs() {
-        viewModel.loadTrendingGifs().observe(this, new Observer<List<GifObject>>() {
+    private void populateRecyclerViewWithGifs(final int offset, final int limit) {
+        viewModel.loadTrendingGifs(offset, limit).observe(this, new Observer<List<GifObject>>() {
             @Override
             public void onChanged(@Nullable List<GifObject> gifObjects) {
                 if (gifObjects != null && !gifObjects.isEmpty()) {
-                    adapter.updateList(gifObjects);
+                    adapter.addAllGifs(gifObjects);
                 }
-
+                isLoading = false;
+                if ((offset + limit) > totalResults) {
+                    isLastResult = true;
+                }
             }
         });
     }

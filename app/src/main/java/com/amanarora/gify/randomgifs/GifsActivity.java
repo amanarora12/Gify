@@ -1,20 +1,16 @@
 package com.amanarora.gify.randomgifs;
 
-import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import com.amanarora.gify.Constants;
 import com.amanarora.gify.R;
-import com.amanarora.gify.api.GiphyService;
 import com.amanarora.gify.api.GlideService;
 import com.amanarora.gify.databinding.ActivityGifsBinding;
 

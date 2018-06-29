@@ -18,7 +18,7 @@ public class TrendingViewModel extends ViewModel {
         this.giphyService = giphyService;
     }
 
-    LiveData<List<GifObject>> loadTrendingGifs() {
-        return giphyService.loadTrendingGifs();
+    LiveData<List<GifObject>> loadTrendingGifs(int offset, int limit) {
+        return giphyService.loadTrendingGifs(offset, limit);
     }
 }
