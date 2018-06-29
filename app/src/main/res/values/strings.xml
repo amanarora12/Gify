@@ -3,4 +3,6 @@
     <string name="action_settings">Settings</string>
     <string name="giphy_api_key">dc6zaTOxFJmzC</string>
     <string name="gif_image">GIF Image</string>
+    <string name="error_msg">Couldn\'t load GIFs :(</string>
+    <string name="retry">RETRY</string>
 </resources>

@@ -13,9 +13,6 @@ public class GiphyResponse {
     @SerializedName("pagination")
     @Expose
     private Pagination pagination;
-    @SerializedName("meta")
-    @Expose
-    private Meta meta;
 
     public List<GifObject> getData() {
         return data;
@@ -32,13 +29,4 @@ public class GiphyResponse {
     public void setPagination(Pagination pagination) {
         this.pagination = pagination;
     }
-
-    public Meta getMeta() {
-        return meta;
-    }
-
-    public void setMeta(Meta meta) {
-        this.meta = meta;
-    }
-
 }

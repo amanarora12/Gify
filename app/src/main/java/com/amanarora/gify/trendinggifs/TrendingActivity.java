@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -99,6 +100,9 @@ public class TrendingActivity extends AppCompatActivity {
     private void loadInitialResults() {
         viewModel.loadTrendingGifs(START_OFFSET, LIMIT_PER_REQUEST).observe(this, giphyResponse -> {
             if (giphyResponse != null) {
+                if (binding.content.errorScreen.errorLayout.getVisibility() == View.VISIBLE) {
+                    binding.content.errorScreen.errorLayout.setVisibility(View.GONE);
+                }
                 Pagination pagination = giphyResponse.getPagination();
                 if (DataUtils.isNotNull(pagination)) {
                     totalResults = pagination.getTotalCount();
@@ -106,6 +110,12 @@ public class TrendingActivity extends AppCompatActivity {
                 List<GifObject> gifObjects = giphyResponse.getData();
                 loadGifs(gifObjects, START_OFFSET, LIMIT_PER_REQUEST);
                 binding.content.progressBar.setVisibility(View.GONE);
+            } else {
+                binding.content.progressBar.setVisibility(View.GONE);
+                binding.content.errorScreen.errorLayout.setVisibility(View.VISIBLE);
+                binding.content.errorScreen.errorBtnRetry.setOnClickListener(view -> {
+                    loadInitialResults();
+                });
             }
         });
     }
@@ -115,6 +125,11 @@ public class TrendingActivity extends AppCompatActivity {
             if (giphyResponse != null) {
                 List<GifObject> gifObjects = giphyResponse.getData();
                 loadGifs(gifObjects, offset, limit);
+            } else{
+                Snackbar.make(binding.getRoot(), getResources().getString(R.string.error_msg),Snackbar.LENGTH_INDEFINITE)
+                        .setAction(getResources().getString(R.string.retry), view -> loadNextResults(offset, limit))
+                        .setActionTextColor(getResources().getColor(R.color.colorAccent))
+                        .show();
             }
         });
     }
