@@ -1,14 +1,10 @@
 package com.amanarora.gify.trendinggifs;
 
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.Transformations;
 import android.arch.lifecycle.ViewModel;
 
 import com.amanarora.gify.api.GiphyService;
-import com.amanarora.gify.models.GifObject;
 import com.amanarora.gify.models.GiphyResponse;
-
-import java.util.List;
 
 import javax.inject.Inject;
 

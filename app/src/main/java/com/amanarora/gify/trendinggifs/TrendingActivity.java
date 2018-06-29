@@ -32,7 +32,8 @@ public class TrendingActivity extends AppCompatActivity {
     private ActivityTrendingBinding binding;
     private TrendingViewModel viewModel;
     private TrendingGifsAdapter adapter;
-    public static final int LIMIT_PER_REQUEST = 25;
+    private static final int LIMIT_PER_REQUEST = 25;
+    private static final int START_OFFSET = 0;
     private boolean isLoading = false;
     private boolean isLastResult = false;
     private int totalResults = 25;
@@ -79,7 +80,7 @@ public class TrendingActivity extends AppCompatActivity {
             void loadMoreResults() {
                 isLoading = true;
                 currentOffset += LIMIT_PER_REQUEST;
-                populateRecyclerViewWithGifs(currentOffset, LIMIT_PER_REQUEST);
+                loadNextResults(currentOffset, LIMIT_PER_REQUEST);
             }
 
             @Override
@@ -93,34 +94,45 @@ public class TrendingActivity extends AppCompatActivity {
             }
         });
         loadInitialResults();
-        binding.content.progressBar.setVisibility(View.GONE);
     }
 
     private void loadInitialResults() {
-        populateRecyclerViewWithGifs(currentOffset, LIMIT_PER_REQUEST);
+        viewModel.loadTrendingGifs(START_OFFSET, LIMIT_PER_REQUEST).observe(this, giphyResponse -> {
+            if (giphyResponse != null) {
+                Pagination pagination = giphyResponse.getPagination();
+                if (DataUtils.isNotNull(pagination)) {
+                    totalResults = pagination.getTotalCount();
+                }
+                List<GifObject> gifObjects = giphyResponse.getData();
+                loadGifs(gifObjects, START_OFFSET, LIMIT_PER_REQUEST);
+                binding.content.progressBar.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    private void loadNextResults(int offset, int limit) {
+        viewModel.loadTrendingGifs(offset, limit).observe(this, giphyResponse -> {
+            if (giphyResponse != null) {
+                List<GifObject> gifObjects = giphyResponse.getData();
+                loadGifs(gifObjects, offset, limit);
+            }
+        });
+    }
+
+    private void loadGifs(List<GifObject> gifObjects, int offset, int limit){
+        if (DataUtils.isNotNull(gifObjects) && !gifObjects.isEmpty()) {
+            adapter.addAllGifs(gifObjects);
+            isLoading = false;
+            if ((offset + limit) > totalResults) {
+                isLastResult = true;
+            }
+        }
     }
 
     private Intent randomGifActivityIntent(String url) {
         Intent intent = new Intent(this, GifsActivity.class);
         intent.putExtra(Constants.EXTRA_GIF_URL_KEY, url);
         return intent;
-    }
-
-    private void populateRecyclerViewWithGifs(final int offset, final int limit) {
-        viewModel.loadTrendingGifs(offset, limit).observe(this, giphyResponse -> {
-            if (giphyResponse != null) {
-                List<GifObject> gifObjects = giphyResponse.getData();
-                Pagination pagination = giphyResponse.getPagination();
-                if (DataUtils.isNotNull(pagination, gifObjects) && !gifObjects.isEmpty()) {
-                    totalResults = pagination.getTotalCount();
-                    adapter.addAllGifs(gifObjects);
-                    isLoading = false;
-                    if ((offset + limit) > totalResults) {
-                        isLastResult = true;
-                    }
-                }
-            }
-        });
     }
 
     @Override
