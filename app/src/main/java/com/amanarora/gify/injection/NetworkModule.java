@@ -2,6 +2,7 @@ package com.amanarora.gify.injection;
 
 import android.content.Context;
 
+import com.amanarora.gify.BuildConfig;
 import com.amanarora.gify.Constants;
 import com.amanarora.gify.R;
 import com.amanarora.gify.api.GiphyApiService;
@@ -14,6 +15,8 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -26,13 +29,23 @@ public class NetworkModule {
          return context.getString(R.string.giphy_api_key);
     }
 
+    @Singleton
+    @Provides
+    public OkHttpClient provideLoggingCapableClient() {
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(BuildConfig.DEBUG ? HttpLoggingInterceptor.Level.BODY : HttpLoggingInterceptor.Level.NONE);
+        return new OkHttpClient.Builder()
+                .addInterceptor(logging)
+                .build();
+    }
 
     @Singleton
     @Provides
-    Retrofit provideRetrofit() {
+    Retrofit provideRetrofit(OkHttpClient okHttpClient) {
         return new Retrofit.Builder()
                 .baseUrl(Constants.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
+                .client(okHttpClient)
                 .build();
     }
 
