@@ -29,18 +29,18 @@ public class GiphyService {
         this.giphyApiService = giphyApiService;
     }
 
-    public LiveData<List<GifObject>> loadTrendingGifs() {
-        final MutableLiveData<List<GifObject>> data = new MutableLiveData<>();
-        giphyApiService.getTrendingGifs(25).enqueue(new Callback<GiphyResponse>() {
+    public LiveData<GiphyResponse> loadTrendingGifs(int offset, int limit) {
+        final MutableLiveData<GiphyResponse> data = new MutableLiveData<>();
+        giphyApiService.getTrendingGifs(offset, limit).enqueue(new Callback<GiphyResponse>() {
             @Override
             public void onResponse(Call<GiphyResponse> call, Response<GiphyResponse> response) {
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
-                        //TODO Transform Model
-                        Log.d(LOG_TAG, "onResponse: success"  );
-                        List<GifObject> objects = Objects.requireNonNull(response.body()).getData();
-                        data.postValue(objects);
+                        Log.d(LOG_TAG, "Response successful."  );
+                        data.postValue(response.body());
                     }
+                } else {
+                    Log.e(LOG_TAG, "Response not successful.");
                 }
             }
 
@@ -59,8 +59,14 @@ public class GiphyService {
             @Override
             public void run() {
                 try {
-                    Log.d(LOG_TAG, "Executing every 10 seconds ");
-                    String url = giphyApiService.getRandomGif().execute().body().getData().getImages().getFixedHeight().getUrl();
+                    String url = Objects.requireNonNull(giphyApiService
+                            .getRandomGif()
+                            .execute()
+                            .body())
+                            .getData()
+                            .getImages()
+                            .getFixedHeight()
+                            .getUrl();
                     data.postValue(url);
                 } catch (IOException e) {
                     Log.e(LOG_TAG, "Cannot retrieve gif. ", e );

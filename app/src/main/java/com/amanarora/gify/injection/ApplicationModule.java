@@ -2,6 +2,9 @@ package com.amanarora.gify.injection;
 
 import android.app.Application;
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.support.annotation.Nullable;
 
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
