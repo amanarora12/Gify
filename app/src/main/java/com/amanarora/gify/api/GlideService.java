@@ -35,7 +35,7 @@ public class GlideService {
                 .error(R.mipmap.ic_launcher)
                 .fallback(R.mipmap.ic_launcher)
                 .override(width,height)
-                .diskCacheStrategy(DiskCacheStrategy.RESOURCE))
+                .diskCacheStrategy(DiskCacheStrategy.ALL))
                 .load(url);
     }
 
