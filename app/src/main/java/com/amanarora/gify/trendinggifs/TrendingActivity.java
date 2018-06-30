@@ -52,6 +52,7 @@ public class TrendingActivity extends AppCompatActivity {
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_trending);
         setSupportActionBar(binding.toolbar);
+
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(TrendingViewModel.class);
 
         setupTrendingGifsRecyclerView();
