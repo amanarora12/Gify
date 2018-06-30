@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.amanarora.gify.Constants;
 import com.amanarora.gify.models.GiphyResponse;
+import com.amanarora.gify.models.RandomGiphyResponse;
 import com.amanarora.gify.models.repository.GifRepository;
 
 import java.io.IOException;
@@ -60,14 +61,14 @@ public class GiphyService implements GifRepository{
         long period = 10;
         executor.scheduleAtFixedRate(() -> {
             try {
-                String url = Objects.requireNonNull(giphyApiService
-                        .getRandomGif()
+                Call<RandomGiphyResponse> randomGifRequest= giphyApiService.getRandomGif();
+                String url = Objects.requireNonNull(randomGifRequest
                         .execute()
                         .body())
                         .getData()
                         .getImages()
                         .getFixedHeight()
-                        .getUrl();
+                        .getMp4();
                 data.postValue(url);
             } catch (IOException e) {
                 Log.e(LOG_TAG, "Cannot retrieve gif. ", e );

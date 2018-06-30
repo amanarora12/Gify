@@ -112,7 +112,7 @@ public class TrendingGifsAdapter extends RecyclerView.Adapter<TrendingGifsAdapte
             binding.getRoot().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    String gifUrl = trendingGifsList.get(getAdapterPosition()).getImages().getFixedHeight().getUrl();
+                    String gifUrl = trendingGifsList.get(getAdapterPosition()).getImages().getFixedHeight().getMp4();
                     callback.onItemSelected(gifUrl);
                 }
             });
