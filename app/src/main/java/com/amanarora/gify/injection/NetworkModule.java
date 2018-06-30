@@ -10,7 +10,6 @@ import com.amanarora.gify.api.GiphyApiService;
 import com.amanarora.gify.api.GiphyService;
 import com.amanarora.gify.models.repository.GifRepository;
 
-import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Named;
@@ -60,7 +59,7 @@ public class NetworkModule {
     @Provides
     @Named("offline_cache")
     public Interceptor provideOfflineCacheInterceptor(Context context) {
-        final boolean hasNetwork = new NetworkStateProvider(context).isNetworkConnected();
+        final boolean hasNetwork = NetworkStateProvider.isNetworkConnected(context);
         return chain -> {
             Request request = chain.request();
             if (!hasNetwork) {

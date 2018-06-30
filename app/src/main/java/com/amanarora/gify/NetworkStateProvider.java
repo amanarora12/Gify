@@ -5,12 +5,9 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 public class NetworkStateProvider {
-    private Context context;
-    public NetworkStateProvider(Context context) {
-        this.context = context;
-    }
+    private NetworkStateProvider(){}
 
-    public boolean isNetworkConnected() {
+    public static boolean isNetworkConnected(Context context) {
         ConnectivityManager connectivityManager = (ConnectivityManager) context
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
