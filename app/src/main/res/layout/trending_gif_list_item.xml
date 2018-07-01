@@ -11,5 +11,11 @@
             android:scaleType="centerCrop"
             android:adjustViewBounds="true"
             android:contentDescription="@string/gif_image" />
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
     </FrameLayout>
 </layout>
