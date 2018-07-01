@@ -5,7 +5,6 @@ import android.content.Context;
 import com.amanarora.gify.BuildConfig;
 import com.amanarora.gify.Constants;
 import com.amanarora.gify.NetworkStateProvider;
-import com.amanarora.gify.R;
 import com.amanarora.gify.api.GiphyApiService;
 import com.amanarora.gify.api.GiphyService;
 import com.amanarora.gify.models.repository.GifRepository;
@@ -29,12 +28,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 @Module
 public class NetworkModule {
-
-    @Provides
-    @Named(Constants.Injection.Named.GIPHY_API_KEY)
-    public String provideGiphyApiKey(Context context) {
-         return context.getString(R.string.giphy_api_key);
-    }
 
     @Provides
     public Cache provideCache(Context context) {
