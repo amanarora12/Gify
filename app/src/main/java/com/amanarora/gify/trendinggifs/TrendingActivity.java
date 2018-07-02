@@ -116,6 +116,8 @@ public class TrendingActivity extends AppCompatActivity {
                 binding.content.progressBar.setVisibility(View.GONE);
                 binding.content.errorScreen.errorLayout.setVisibility(View.VISIBLE);
                 binding.content.errorScreen.errorBtnRetry.setOnClickListener(view -> {
+                    binding.content.progressBar.setVisibility(View.VISIBLE);
+                    binding.content.errorScreen.errorLayout.setVisibility(View.GONE);
                     loadInitialResults();
                 });
             }
