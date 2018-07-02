@@ -1,7 +1,6 @@
 package com.amanarora.gify.api;
 
 import android.content.Context;
-import android.widget.ImageView;
 
 import com.amanarora.gify.R;
 import com.bumptech.glide.Glide;

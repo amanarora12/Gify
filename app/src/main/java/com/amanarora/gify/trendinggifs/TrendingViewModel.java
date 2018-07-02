@@ -3,7 +3,6 @@ package com.amanarora.gify.trendinggifs;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
 
-import com.amanarora.gify.api.GiphyService;
 import com.amanarora.gify.models.GiphyResponse;
 import com.amanarora.gify.models.repository.GifRepository;
 
