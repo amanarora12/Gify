@@ -24,7 +24,11 @@
             </intent-filter>
         </activity>
         <activity android:name=".randomgifs.GifsActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"/>
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".trendinggifs.TrendingActivity" />
+        </activity>
     </application>
 
 </manifest>
