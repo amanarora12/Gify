@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.annotation.VisibleForTesting;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -38,6 +39,7 @@ public class TrendingActivity extends AppCompatActivity {
     private boolean isLastResult = false;
     private int totalResults = 25;
     private int currentOffset = 0;
+    private ProgressListener progressListener = null;
 
     @Inject
     ViewModelProvider.Factory viewModelFactory;
@@ -54,7 +56,8 @@ public class TrendingActivity extends AppCompatActivity {
         setSupportActionBar(binding.toolbar);
 
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(TrendingViewModel.class);
-
+        binding.content.progressBar.setVisibility(View.VISIBLE);
+        notifyProgressListener(progressListener);
         setupTrendingGifsRecyclerView();
     }
 
@@ -110,6 +113,7 @@ public class TrendingActivity extends AppCompatActivity {
                 List<GifObject> gifObjects = giphyResponse.getData();
                 loadGifs(gifObjects, START_OFFSET);
                 binding.content.progressBar.setVisibility(View.GONE);
+                notifyProgressListener(progressListener);
             } else {
                 binding.content.progressBar.setVisibility(View.GONE);
                 binding.content.errorScreen.errorLayout.setVisibility(View.VISIBLE);
@@ -149,4 +153,39 @@ public class TrendingActivity extends AppCompatActivity {
         intent.putExtra(Constants.EXTRA_GIF_URL_KEY, url);
         return intent;
     }
+
+    //For idling resources in Espresso Test
+    @VisibleForTesting
+    public void setProgressListener(ProgressListener progressListener) {
+        this.progressListener = progressListener;
+    }
+
+    @VisibleForTesting
+    public interface ProgressListener {
+        void onProgressBarVisible();
+        void onProgressBarGone();
+    }
+
+    @VisibleForTesting
+    public boolean isProgressBarVisible() {
+        return binding.content.progressBar.getVisibility() == View.VISIBLE;
+    }
+
+    @VisibleForTesting
+    public boolean isProgressBarGone() {
+        return binding.content.progressBar.getVisibility() == View.GONE;
+    }
+
+    @VisibleForTesting
+    private void notifyProgressListener(ProgressListener progressListener) {
+        if (progressListener == null) {
+            return;
+        }
+        if (isProgressBarVisible()) {
+            progressListener.onProgressBarVisible();
+        } else {
+            progressListener.onProgressBarGone();
+        }
+    }
+
 }

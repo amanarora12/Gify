@@ -1,10 +1,12 @@
 package com.amanarora.gify.trendinggifs;
 
+import android.support.test.espresso.IdlingRegistry;
 import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.espresso.intent.Intents;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
+import com.amanarora.gify.idlingresources.ProgressIdlingResource;
 import com.amanarora.gify.R;
 import com.amanarora.gify.randomgifs.GifsActivity;
 
@@ -28,11 +30,13 @@ public class TrendingActivityTest {
 
     @Test
     public void onGifClickTest() {
+        IdlingRegistry.getInstance().register(new ProgressIdlingResource(activityRule.getActivity()));
         Intents.init();
         onView(withId(R.id.gif_list))
                 .perform(RecyclerViewActions.actionOnItemAtPosition(5, click()));
         intended(hasComponent(hasClassName(GifsActivity.class.getName())));
         Intents.release();
+        IdlingRegistry.getInstance().unregister(new ProgressIdlingResource(activityRule.getActivity()));
     }
 
 }
