@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 
 import com.amanarora.gify.Constants;
 import com.amanarora.gify.DataUtils;
@@ -62,10 +63,18 @@ public class GifsActivity extends AppCompatActivity {
 
         binding = DataBindingUtil.setContentView(this,R.layout.activity_gifs);
 
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(GifsViewModel.class);
     }
 
     private void initializeExoplayer(String url) {
+        if (DataUtils.isNullOrEmpty(url)) {
+            showErrorScreen();
+            return;
+        }
         DefaultRenderersFactory renderersFactory = new DefaultRenderersFactory(this);
         TrackSelector trackSelector = new DefaultTrackSelector();
         exoPlayer = ExoPlayerFactory.newSimpleInstance(renderersFactory, trackSelector);
@@ -78,6 +87,12 @@ public class GifsActivity extends AppCompatActivity {
         exoPlayer.setRepeatMode(Player.REPEAT_MODE_ONE);
         binding.playerView.setPlayer(exoPlayer);
         exoPlayer.addListener(new PlayerEventListener());
+    }
+
+    private void showErrorScreen() {
+        binding.playerView.setVisibility(View.GONE);
+        binding.errorScreen.errorLayout.setVisibility(View.VISIBLE);
+        binding.errorScreen.errorBtnRetry.setVisibility(View.GONE);
     }
 
     private void releaseExoplayer() {
@@ -93,6 +108,8 @@ public class GifsActivity extends AppCompatActivity {
                     new DefaultHttpDataSourceFactory(userAgent))
                     .createMediaSource(Uri.parse(url));
             exoPlayer.prepare(mediaSource);
+        } else {
+            initializeExoplayer(url);
         }
     }
 
