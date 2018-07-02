@@ -4,6 +4,7 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
 
 import com.amanarora.gify.api.GiphyService;
+import com.amanarora.gify.models.repository.GifRepository;
 
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
@@ -11,10 +12,10 @@ import javax.inject.Inject;
 
 public class GifsViewModel extends ViewModel {
 
-    private GiphyService giphyService;
+    private GifRepository giphyService;
 
     @Inject
-    GifsViewModel(GiphyService giphyService) {
+    GifsViewModel(GifRepository giphyService) {
         this.giphyService = giphyService;
     }
 

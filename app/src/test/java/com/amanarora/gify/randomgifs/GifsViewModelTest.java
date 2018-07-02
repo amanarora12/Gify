@@ -4,6 +4,7 @@ import android.arch.core.executor.testing.InstantTaskExecutorRule;
 import android.arch.lifecycle.MutableLiveData;
 
 import com.amanarora.gify.api.GiphyService;
+import com.amanarora.gify.models.repository.GifRepository;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -25,7 +26,7 @@ public class GifsViewModelTest {
     private GifsViewModel gifsViewModel;
 
     @Mock
-    private GiphyService mockGiphyService;
+    private GifRepository mockGiphyService;
 
     @Before
     public void setUp() {

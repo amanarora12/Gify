@@ -5,14 +5,15 @@ import android.arch.lifecycle.ViewModel;
 
 import com.amanarora.gify.api.GiphyService;
 import com.amanarora.gify.models.GiphyResponse;
+import com.amanarora.gify.models.repository.GifRepository;
 
 import javax.inject.Inject;
 
 public class TrendingViewModel extends ViewModel {
-    private GiphyService giphyService;
+    private GifRepository giphyService;
 
     @Inject
-    TrendingViewModel(GiphyService giphyService) {
+    TrendingViewModel(GifRepository giphyService) {
         this.giphyService = giphyService;
     }
 

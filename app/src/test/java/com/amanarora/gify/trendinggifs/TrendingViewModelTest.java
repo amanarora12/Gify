@@ -5,6 +5,7 @@ import android.arch.lifecycle.MutableLiveData;
 
 import com.amanarora.gify.api.GiphyService;
 import com.amanarora.gify.models.GiphyResponse;
+import com.amanarora.gify.models.repository.GifRepository;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -28,7 +29,7 @@ public class TrendingViewModelTest {
     private MutableLiveData liveData;
 
     @Mock
-    private GiphyService giphyService;
+    private GifRepository giphyService;
 
     @Before
     public void setUp() {
