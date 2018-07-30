@@ -1,3 +1,4 @@
+require 'open3'
 apkanalyzer.apk_file = "app/build/outputs/apk/debug/app-debug.apk"
 # Sometimes it's a README fix, or something like that - which isn't relevant for
 # including in a project's CHANGELOG for example
@@ -10,6 +11,17 @@ def apk_size()
   File.size("app/build/outputs/apk/debug/app-debug.apk")
 end
 message("Apk Size #{apk_size}")
+
+def analyze_size()
+  o, e, s = Open3.capture3("apkanalyzer -h dex references app/build/outputs/apk/debug/app-debug.apk;")
+      if s.success?
+        o.each_line do |line|
+         v = line.chomp.split(" ")
+         message << "| #{v[0]} | #{v[1]} |\n"
+      end
+end
+
+analyze_size()
 # Make it more obvious that a PR is a work in progress and shouldn't be merged yet
 warn("PR is classed as Work in Progress") if github.pr_title.include? "[WIP]"
 
