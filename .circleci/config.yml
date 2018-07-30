@@ -23,7 +23,8 @@ jobs:
       - run:
           name: Run Tests
           command: ./gradlew lint test
-      - run: bundle install && bundle exec danger --verbose
+      - run: bundle install
+      - run: bundle exec danger --verbose
       - store_artifacts:
           path: app/build/reports
           destination: reports
