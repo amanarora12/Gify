@@ -4,7 +4,12 @@ apkanalyzer.apk_file = "app/build/outputs/apk/debug/app-debug.apk"
 declared_trivial = github.pr_title.include? "#trivial"
 
 apkanalyzer.file_size
+apkanalyzer.method_references
 
+def apk_size()
+  File.size("app/build/outputs/apk/debug/app-debug.apk")
+end
+message("Apk Size #{apk_size}")
 # Make it more obvious that a PR is a work in progress and shouldn't be merged yet
 warn("PR is classed as Work in Progress") if github.pr_title.include? "[WIP]"
 
