@@ -33,6 +33,9 @@ jobs:
           name: Run Tests
           command: ./gradlew lint test
       - run:
+          name: Build Debug
+          command: ./gradlew --offline --stacktrace assembleDebug
+      - run:
           name: Execute Danger
           command: bundle exec danger --verbose
       - store_artifacts:

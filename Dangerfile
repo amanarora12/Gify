@@ -1,4 +1,4 @@
-apkanalyzer.apk_file = "/app/build/outputs/apk/release/app-release.apk"
+apkanalyzer.apk_file = "app/build/outputs/apk/debug/app-debug.apk"
 # Sometimes it's a README fix, or something like that - which isn't relevant for
 # including in a project's CHANGELOG for example
 declared_trivial = github.pr_title.include? "#trivial"
