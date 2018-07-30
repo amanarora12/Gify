@@ -23,8 +23,8 @@ jobs:
       - run:
           name: Run Tests
           command: ./gradlew lint test
-      - run: bundle install
-      - run: bundle exec danger --verbose
+      - run: rbenv global 2.3.1 && gem install danger --version '~> 5.0' && danger
+      - run: danger --verbose
       - store_artifacts:
           path: app/build/reports
           destination: reports
