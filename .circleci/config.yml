@@ -4,6 +4,7 @@ jobs:
     working_directory: ~/code
     docker:
       - image: circleci/android:api-25-alpha
+      - image: circleci/ruby:2.4.4
     environment:
       JVM_OPTS: -Xmx3200m
     steps:
@@ -23,8 +24,8 @@ jobs:
       - run:
           name: Run Tests
           command: ./gradlew lint test
-      - run: rbenv global 2.3.1 && gem install danger --version '~> 5.0' && danger
-      - run: danger --verbose
+      - run: bundle install
+      - run: bundle exec danger --verbose
       - store_artifacts:
           path: app/build/reports
           destination: reports
